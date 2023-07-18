@@ -16,18 +16,18 @@ def getConnection():
     )
 
 
-def addChannel(channelID: int, maxAge: int):
-    channels = getChannels()
+def _addChannel(channelID: int, maxAge: int):
+    channels = _getChannels()
     for (channel, _) in channels:
         if channel == channelID:
-            updateChannel(channelID, maxAge)
+            _updateChannel(channelID, maxAge)
             return
         
     db = getConnection()
     cursor = db.cursor()
 
-    addChannel = ("INSERT INTO channels (channel, maxAge) VALUES (%s, %s)")
-    cursor.execute(addChannel, [str(channelID), maxAge])
+    insertChannel = ("INSERT INTO channels (channel, maxAge) VALUES (%s, %s)")
+    cursor.execute(insertChannel, [str(channelID), maxAge])
 
     db.commit()
 
@@ -36,7 +36,7 @@ def addChannel(channelID: int, maxAge: int):
     print(f'added channel {channelID} to deletion database')
 
 
-def updateChannel(channelID: int, maxAge: int):
+def _updateChannel(channelID: int, maxAge: int):
     db = getConnection()
     cursor = db.cursor()
 
@@ -50,7 +50,7 @@ def updateChannel(channelID: int, maxAge: int):
     print(f'updated channel {channelID} in deletion database to have maxAge {maxAge} minutes')
 
 
-def deleteChannel(channelID: int):
+def _deleteChannel(channelID: int):
     db = getConnection()
     cursor = db.cursor()
 
@@ -64,16 +64,39 @@ def deleteChannel(channelID: int):
     print(f'removed channel {channelID} to deletion database')
 
 
-def getChannels() -> list[(int, int)]:
+def _getChannels() -> list[(int, int)]:
     db = getConnection()
     cursor = db.cursor()
 
     channels = []
-    getChannels = ("SELECT channel, maxAge FROM channels")
-    cursor.execute(getChannels)
+    getAllChannels = ("SELECT channel, maxAge FROM channels")
+    cursor.execute(getAllChannels)
     for (channel, maxAge) in cursor:
         channels.append((int(channel), maxAge))
 
     cursor.close()
     db.close()
     return channels
+
+
+def addChannel(channelID: int, maxAge: int) -> int:
+    try:
+        _addChannel(channelID, maxAge)
+        return 0
+    except Exception:
+        return 1
+
+
+def deleteChannel(channelID: int) -> int:
+    try:
+        _deleteChannel(channelID)
+        return 0
+    except Exception:
+        return 1
+
+
+def getChannels() -> list[(int, int)]:
+    try:
+        return _getChannels()
+    except Exception:
+        return []
