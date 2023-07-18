@@ -23,7 +23,7 @@ client = commands.Bot(command_prefix='~~', intents=intents)
 
 @client.event
 async def on_ready():
-    # delete.start()
+    delete.start()
     pass
 
 
@@ -37,9 +37,11 @@ async def deleteHere(ctx):
         return
 
     try:
-        database.addChannel(channel.id, maxAge)
-        await channel.send('oki!')
-        await delete()
+        result = database.addChannel(channel.id, maxAge)
+        if result == 1:
+            await channel.send('sorry, something went wrong :/ please try again (it will probably work this time :3 )')
+        else:
+            await channel.send('oki! (the first purge will be in the next first purge cycle :3 )')
     except:
         await channel.send('something probably went wrong with the database connection, contact Anna :3')
 
@@ -79,7 +81,7 @@ def parseMaxAge(message: str) -> int:
 @deleteHere.error
 async def deleteHereError(ctx, error):
     if isinstance(error, MissingPermissions):
-        await ctx.send('grrr only people with `manage_messages` permissions can set this')
+        await ctx.send('grrr only people with `manage_messages` permissions can do this')
 
 
 @tasks.loop(minutes=1.0)
@@ -96,14 +98,17 @@ async def delete():
 @has_permissions(manage_messages=True)
 async def stopDeletion(ctx):
     channel = ctx.channel
-    database.deleteChannel(channel.id)
-    await channel.send('oki!')
+    result = database.deleteChannel(channel.id)
+    if result == 1:
+        await channel.send('sorry, something went wrong :/ please try again (it will probably work this time :3 )')
+    else:
+        await channel.send('oki! the channel won\'t be included in auto purges anymore :3')
 
 
 @stopDeletion.error
 async def stopDeletionError(ctx, error):
     if isinstance(error, MissingPermissions):
-        await ctx.send('grrr only people with `manage_messages` permissions can set this')
+        await ctx.send('grrr only people with `manage_messages` permissions can do this')
 
 
 @client.command()
