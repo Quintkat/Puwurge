@@ -15,6 +15,8 @@ else:
 
 
 
+# This is a change :3
+
 intents = discord.Intents.default()
 intents.message_content = True
 
