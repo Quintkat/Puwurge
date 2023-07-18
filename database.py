@@ -8,6 +8,7 @@ if os.path.isfile('.env'):
 
 
 def getConnection():
+    """Returns a standard database connection"""
     return connector.connect(
         host=os.environ.get('DB_HOST'),
         user=os.environ.get('DB_USER'),
@@ -17,12 +18,16 @@ def getConnection():
 
 
 def _addChannel(channelID: int, maxAge: int):
+    """Connects to the database and adds the channel and its max message age to it"""
+
+    # First check if the channel is already in the database, in which case its max message age needs to be updated
     channels = _getChannels()
     for (channel, _) in channels:
         if channel == channelID:
             _updateChannel(channelID, maxAge)
             return
-        
+    
+    # Otherwise insert it into the database
     db = getConnection()
     cursor = db.cursor()
 
@@ -37,6 +42,7 @@ def _addChannel(channelID: int, maxAge: int):
 
 
 def _updateChannel(channelID: int, maxAge: int):
+    """Connects to the database and updates the max message age of a channel"""
     db = getConnection()
     cursor = db.cursor()
 
@@ -51,6 +57,7 @@ def _updateChannel(channelID: int, maxAge: int):
 
 
 def _deleteChannel(channelID: int):
+    """Connects to the database and removes a channel from it"""
     db = getConnection()
     cursor = db.cursor()
 
@@ -65,6 +72,7 @@ def _deleteChannel(channelID: int):
 
 
 def _getChannels() -> list[(int, int)]:
+    """Connects to the database and fetches the channels and their max age"""
     db = getConnection()
     cursor = db.cursor()
 
@@ -79,7 +87,12 @@ def _getChannels() -> list[(int, int)]:
     return channels
 
 
+###
+# The following functions are here, since the database connection raises an exception sometimes and crashes the bot if uncaught
+###
+
 def addChannel(channelID: int, maxAge: int) -> int:
+    """Adds a channel and its max message age to the database for auto purging"""
     try:
         _addChannel(channelID, maxAge)
         return 0
@@ -88,6 +101,7 @@ def addChannel(channelID: int, maxAge: int) -> int:
 
 
 def deleteChannel(channelID: int) -> int:
+    """Removes a channel from the database. This stops it being auto purged"""
     try:
         _deleteChannel(channelID)
         return 0
@@ -96,6 +110,7 @@ def deleteChannel(channelID: int) -> int:
 
 
 def getChannels() -> list[(int, int)]:
+    """Gets all channels in the database, alongside their max message age"""
     try:
         return _getChannels()
     except Exception:
