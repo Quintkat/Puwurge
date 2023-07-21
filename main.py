@@ -15,6 +15,11 @@ else:
     print('Loading environment variables from server variables')
 
 
+# Safe mode allows you to run the bot and test stuff, without having actual results on the database or existing messages
+SAFEMODE = os.environ.get('SAFE_MODE', False).lower() == 'true'
+if SAFEMODE:
+    print('Safe mode is on')
+
 
 # Boilerplate
 intents = discord.Intents.default()
@@ -26,6 +31,7 @@ client = commands.Bot(command_prefix='~~', intents=intents)
 @client.event
 async def on_ready():
     delete.start()
+
 
 @client.command()
 @has_permissions(manage_messages=True)
