@@ -38,7 +38,7 @@ def _addChannel(channelID: int, maxAge: int):
 
     cursor.close()
     db.close()
-    print(f'added channel {channelID} to deletion database')
+    print(f'added channel {channelID} to deletion database with maxAge {maxAge} minutes')
 
 
 def _updateChannel(channelID: int, maxAge: int):
