@@ -19,7 +19,7 @@ else:
 
 
 # Safe mode allows you to run the bot and test stuff, without having actual results on the database or existing messages
-SAFEMODE = os.environ.get('SAFE_MODE', False).lower() == 'true'
+SAFEMODE = os.environ.get('SAFE_MODE', 'false').lower() == 'true'
 if SAFEMODE:
     print('Safe mode is on')
 
