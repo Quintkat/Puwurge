@@ -84,7 +84,10 @@ async def delete():
             continue
         
         print(f'Purging all messages in channel {channelID} before {cutoff} (UTC)')
-        await channel.purge(limit=None, before=cutoff, reason='included in periodic channel purge', oldest_first=True)
+        try:
+            await channel.purge(limit=None, before=cutoff, reason='included in periodic channel purge', oldest_first=True)
+        except Exception:
+            print(f'Something went wrong while purging in {channelID}, will try again on next cycle')
 
 
 @client.command()
