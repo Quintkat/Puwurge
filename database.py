@@ -115,7 +115,8 @@ def deleteChannel(channelID: int) -> int:
 def getChannels() -> list[(int, int)]:
     """Gets all channels in the database, alongside their max message age"""
     print("getChannels.start")
-    try:
-        return _getChannels()
-    except Exception:
-        return []
+    return _getChannels()
+    # try:
+    #     return _getChannels()
+    # except Exception:
+    #     return []
