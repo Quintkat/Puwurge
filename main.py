@@ -33,7 +33,10 @@ client = commands.Bot(command_prefix='~~', intents=intents)
 
 @client.event
 async def on_ready():
+    print("on_ready.start")
+    print("database channels", database.getChannels())
     delete.start()
+    print("on_ready.end")
 
 
 @client.command()
@@ -74,9 +77,12 @@ async def deleteHereError(ctx, error):
 
 @tasks.loop(minutes=1.0)
 async def delete():
+    print("delete.start")
     """The task that runs on a loop that auto purges the message"""
     now = datetime.now(tz=timezone.utc)
+    print("delete.pre-loop")
     for (channelID, maxAge) in database.getChannels():
+        print("delete.start-loop", client.get_channel(channelID))
         cutoff = now - timedelta(minutes=maxAge)
         channel = client.get_channel(channelID)
         if SAFEMODE:
