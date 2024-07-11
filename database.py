@@ -73,11 +73,8 @@ def _deleteChannel(channelID: int):
 
 def _getChannels() -> list[(int, int)]:
     """Connects to the database and fetches the channels and their max age"""
-    print("_getChannels.start")
     db = getConnection()
-    print("database connection", db)
     cursor = db.cursor()
-    print("cursor", cursor)
 
     channels = []
     getAllChannels = ("SELECT channel, maxAge FROM channels")
@@ -114,9 +111,8 @@ def deleteChannel(channelID: int) -> int:
 
 def getChannels() -> list[(int, int)]:
     """Gets all channels in the database, alongside their max message age"""
-    print("getChannels.start")
-    return _getChannels()
-    # try:
-    #     return _getChannels()
-    # except Exception:
-    #     return []
+    try:
+        return _getChannels()
+    except Exception:
+        print("ERROR: something went wrong in getting the channels teehee")
+        return []
