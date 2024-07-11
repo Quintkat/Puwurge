@@ -74,7 +74,9 @@ def _deleteChannel(channelID: int):
 def _getChannels() -> list[(int, int)]:
     """Connects to the database and fetches the channels and their max age"""
     db = getConnection()
+    print("database connection", db)
     cursor = db.cursor()
+    print("cursor", cursor)
 
     channels = []
     getAllChannels = ("SELECT channel, maxAge FROM channels")
